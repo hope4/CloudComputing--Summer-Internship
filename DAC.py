@@ -363,7 +363,7 @@ for i in range(m):
 
                                 vmdict[(Vms[len(Vms)-1])]=V
 
-                                print "\nVM%d is successfully created for Host%d using Minimum strategy with specifications\nMIPS      :                                     %d\nRAM       :     %d\nSIZE      :     %d\n\n" %(i+1,i+1,V[0],V[1],V[2]) 
+                                print "\nVM%d is successfully created for Host%d using Minimum strategy with specifications\nMIPS      :     %d\nRAM       :     %d\nSIZE      :     %d\n\n" %(i+1,i+1,V[0],V[1],V[2]) 
 
                         else:
 
@@ -510,10 +510,170 @@ print "********************END OF ROUND2************************\n\n"
 
 
 
-#*****************************************************************************************************                                
+#*********************************ROUND 3 : Execution of Tasks using  virtual machines***********************                                
+#*************************************************************************************
 
+#DAC algorithm Round3 implementation using python
+
+#Date : 9-6-2017
+
+#Name : K Naveen Kumar
+
+
+print "\n************ROUND 3 : EXECUTION OF TASKS USING VIRTUAL MACHINES*****************\n"    
+
+
+#VMs specifications
+
+VMs=[k  for k,v in vmdict.items()]         #contains corresponding Vms
+
+Vram=[int(vmdict[VMs[i]][1]) for i in range(len(VMs))]   #contains ram list of Vms
+
+Vsize=[int(vmdict[VMs[i]][2]) for i in range(len(VMs))]  #contains size list of Vms
+
+Vmips=[int(vmdict[VMs[i]][0]) for i in range(len(VMs))]  #contains Mips list of Vms
+
+#VMflags : 1 indicate the VMs are busy and 0 indicate they are free to use
+
+#initially taken them as 0 : means not assigned
+
+Vflags=[0 for i in range(len(VMs))]
+
+print "We have following resources:\nHosts     : ",Hosts,"\nRAMs      : ",Hram,"\nSizes     : ",Hsize,"\nMIPS      : ",Hmips,"\n"
+
+print "We have following Vms:\nVMs       : ",VMs,"\nRAMs      : ",Vram,"\nSizes     : ",Vsize,"\nMIPS      : ",Vmips,"\n"
+
+#***********decrement of resources
+for i in range(len(Hosts)):
+  
+        Hram[i]=Hram[i]-Vram[i]
+  
+        Hsize[i]=Hsize[i]-Vsize[i]
+  
+        Hmips[i]=Hmips[i]-Vmips[i]
+        
+print "We have following remaining resources after creation of initial virtual:\nHosts     : ",Hosts,"\nRAMs      : ",Hram,"\nSizes     : ",Hsize,"\nMIPS      : ",Hmips,"\n"
+
+#*/*/*/**/*/*/*/*/*/
+print "Execution of Tasks in HQ......\n"
                 
+#Tasks specifications
+
+Tasks = HQ
+
+n=len(Tasks)
+
+Tram=[int(inputdata[Tasks[i]][2]) for i in range(len(Tasks))]   #contains ram list of Tasks
+
+Tsize=[int(inputdata[Tasks[i]][3]) for i in range(len(Tasks))]  #contains size list of Tasks
+
+Tno_of_Instr=[int(inputdata[Tasks[i]][1]) for i in range(len(Tasks))]  #contains Number Of Instructions list of Tasks
+
+TArrival=[int(inputdata[Tasks[i]][4]) for i in range(len(Tasks))]  #contains Mips list of Tasks
+
+TBurst=[int(inputdata[Tasks[i]][5]) for i in range(len(Tasks))]   #contains ram list of Tasks
+
+TDL=[int(inputdata[Tasks[i]][6]) for i in range(len(Tasks))]  #contains size list of Tasks
+
+Talloc={} #contains allocation details of tasks to vms during execution
+
+TCL={} #contains completion time of tasks
+
+TTAT={} #contains turnaround time of tasks
+
+TWT={} #contains waiting times of tasks
                 
+print "We have following Tasks to be executed in HQ with specifications:\nTasks                   :     ",Tasks,"\nRAMs                    :     ",Tram,"\nSizes                   :     ",Tsize,"\nNo of Instructions      :     ",Tno_of_Instr,"\nArrivalTime             :     ",TArrival,"\nBurstTime               :     ",TBurst,"\nDeadLine                :     ",TDL,"\n"
+         
+completionflag=[0 for i in range(len(Tasks))]  #indication execution of all tasks in HQ                
+timer=[0 for i in range(len(VMs))]
+#**********************************/*/*/*/*/*/*/NEED TO WORK ON THIS@#$^&*()))(*&^%$###@@!!!/*/*//*/
+while(sum(completionflag)!=n): 
+ #choosing best fit vm for execution of tasks
+      TempTQ=TQ1 
+      for i in range(len(VMs)):
+             #if tasks find a virtual machine then allocate it to the virtual machine
+          for j in range(len(VMs)):
+               if Tram[i]<=Vram[j] and Tno_of_Instr[i]<=Vmips[j] and Tsize[i]<=Vsize[j] and Vflags[j]==0:
+                   Talloc[str(VMs[j])]=Tasks[i]
+                   Vflags[j]=1   
+                     #else create a new virtual machine provided we have the resources other wise throw an exception to the user 
+               else:
+                   temp=0
+                   for k in range(len(Hosts)):
+                        #checking for host, whether we have resources to incorporte the virtual machine
+                        if Tram[i]<=Hram[k] and Tno_of_Instr[i]<=Hmips[k] and Tsize[i]<=Hsize[k] and temp==0:
+                            V=[Tram[i],Tno_of_Instr[i],Tsize[i]]
+                            VMs.append(len(VMs)+1)
+                            vmdict[(VMs[len(VMs)-1])]=V
+                            print "\n\n\n",i,len(VMs)-1,vmdict,VMs,VMs[len(VMs)-1],"\n\n\n\n"
+                            Talloc[str(VMs[len(VMs)-1])]=Tasks[i]
+                            Vflags.append(1)
+                            Hram[k]=Hram[k]-Tram[i]
+                            Hsize[k]=Hsize[k]-Tsize[i]
+                            Hmips[k]=Hmips[k]-Tno_of_Instr[i]
+                            temp=1 
+                  
+      print "\nThe Tasks are allocated to VMs in the order....\nVMs",Talloc.keys(),"<-------","Tasks",Talloc.values(),"\n\n"                        
+      allocvm=Talloc.keys()
+      alloctasks=Talloc.values()
+     
+      print allocvm,alloctasks
+      for i in range(len(alloctasks)):
+                if(inputdata[alloctasks[i]][6]<TempTQ and timer[int(allocvm[i])-1] < inputdata[alloctasks[i]][6]):
+                        #execute till deadline
+                        timer[int(allocvm[i])-1]=timer[int(allocvm[i])-1]+inputdata[alloctasks[i]][6] 
+                        TCT[alloctasks[i]]=timer[int(allocvm[i])-1]       
+                        completionflag[i]=1 #completion done so remove the task from the list
+                        index=Tasks.index(alloctasks[i])
+                        Tasks.pop(index)
+                        Tram.pop(index)
+                        Tsize.pop(index)
+                        Tno_of_Instr.pop(index)
+                        Vflags[int(allocvm[i])-1]=0
+                        
+                elif (inputdata[alloctasks[i]][6] >= TempTQ and timer[int(allocvm[i])-1] < inputdata[alloctasks[i]][6]):
+                        #execute till Timequanta and put the task again on the queue
+                        timer[int(allocvm[i])-1]=timer[int(allocvm[i])-1]+TempTQ        
+                        index=Tasks.index(alloctasks[i])
+                        b=Tasks.pop(index)
+                        Tasks.append(b)
+                        b=Tram.pop(index)
+                        Tram.append(b)
+                        b=Tsize.pop(index)
+                        Tsize.append(b)
+                        b=Tno_of_Instr.pop(index)
+                        Tno_of_Instr.append(b)
+                        Vflags[int(allocvm[i])-1]=0
                 
-                
-                
+                      
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
