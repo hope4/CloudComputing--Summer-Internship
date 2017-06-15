@@ -6,6 +6,8 @@
 
 #*****************taking input from the file separate by comma and storing into a dictionary called inputdata
 
+from __future__ import division 
+
 inputdata={}
 
 filename = raw_input("Give the name of the input file : ") 
@@ -24,13 +26,13 @@ with open(filename,'r') as input_file:
 
                 inputdata[key]=list(inputdata[key].split(","))
   
-#*****************tasks sorting based on priority and storing into a list called Keyarray     
+#*****************Tasks sorting based on priority and storing into a list called Keyarray     
 
 #used insertionsort for all kinds of sorting that take place in round1
 
 #function for insertionsort
 
-print "\n********************ROUND 1 : DIVISION OF TASKS INTO HQ,MQ,LQ************************\n" 
+print "\n********************ROUND 1 : DIVISION OF Tasks INTO HQ,MQ,LQ************************\n" 
 
 def insertionsort(list1,list2):
 
@@ -82,9 +84,9 @@ def insertionsort(list1,list2):
 
 #******************************************
 
-l1=[int(v[7]) for k,v in inputdata.items() if len(v)==8 ] #contains priority list of tasks
+l1=[int(v[7]) for k,v in inputdata.items() if len(v)==8 ] #contains priority list of Tasks
 
-keyArray=[k  for k,v in inputdata.items() if len(v)==8]         #contains corresponding tasks
+keyArray=[k  for k,v in inputdata.items() if len(v)==8]         #contains corresponding Tasks
 
 
 
@@ -92,7 +94,7 @@ insertionsort(l1,keyArray) #calling insertionsort to sort based on priority
 
         
 
-print "The keyArray containing sorted tasks based on priorities:" ,keyArray
+print "The keyArray containing sorted Tasks based on priorities:" ,keyArray
 
      
 
@@ -100,15 +102,15 @@ print "The keyArray containing sorted tasks based on priorities:" ,keyArray
 
 
 
-LAMBDA = 2     #LAMBDA which regulates the number of tasks in HQ,MQ,LQ respectively
+LAMBDA = 2     #LAMBDA which regulates the number of Tasks in HQ,MQ,LQ respectively
 
-n=len(keyArray) #n : number of tasks
+n=len(keyArray) #n : number of Tasks
 
 
 
-N1= (n/3) + LAMBDA  #it automatically takes floor value unless we import division package
+N1= (n//3) + LAMBDA  #it automatically takes floor value unless we import division package
 
-N2= (n-N1)/2
+N2= (n-N1)//2
 
 N3= (n-(N1+N2))
 
@@ -144,7 +146,7 @@ l2=[HQ[i] for i in range(N1)]
 
 
 
-insertionsort(l1,l2) #calling insertion sort for sorting HQ tasks based on deadlines
+insertionsort(l1,l2) #calling insertion sort for sorting HQ Tasks based on deadlines
 
 
 
@@ -162,7 +164,7 @@ l2=[MQ[i] for i in range(N2)]
 
 
 
-insertionsort(l1,l2) #calling insertion sort for sorting MQ tasks based on deadlines
+insertionsort(l1,l2) #calling insertion sort for sorting MQ Tasks based on deadlines
 
 
 
@@ -180,7 +182,7 @@ l2=[LQ[i] for i in range(N3)]
 
 
 
-insertionsort(l1,l2) #calling insertion sort for sorting LQ tasks based on deadlines
+insertionsort(l1,l2) #calling insertion sort for sorting LQ Tasks based on deadlines
 
 
 
@@ -210,9 +212,9 @@ l2=[int(inputdata[MQ[i]][6]) for i in range(len(MQ))]
 
 
 
-TQ1=max(l1)/pow(2,ALPHA1)   
+TQ1=max(l1)//pow(2,ALPHA1)   
 
-TQ2=max(l2)/pow(2,ALPHA2) 
+TQ2=max(l2)//pow(2,ALPHA2) 
 
 
 
@@ -222,7 +224,7 @@ while(1):
 
           ALPHA1=ALPHA1+1
 
-          TQ1=max(l1)/pow(2,ALPHA1)   
+          TQ1=max(l1)//pow(2,ALPHA1)   
 
        else:
 
@@ -288,11 +290,11 @@ SIZE=[int(inputdata[HQ[i]][3]) for i in range(len(HQ))]
 
 #taking minimum of specifications of HQ
 
-AN= sum(Instructions)/len(Instructions) #Average strategy
+AN= sum(Instructions)//len(Instructions) #Average strategy
 
-AR= sum(RAM)/len(RAM)
+AR= sum(RAM)//len(RAM)
 
-AS= sum(SIZE)/len(SIZE) 
+AS= sum(SIZE)//len(SIZE) 
 
 
 
@@ -320,11 +322,11 @@ for i in range(m):
 
         if i > 0:
 
-                AN=int(vmdict[1][0])+(Hmips[i]/2)
+                AN=int(vmdict[1][0])+(Hmips[i]//2)
 
-                AR=int(vmdict[1][1])+(Hram[i]/2)
+                AR=int(vmdict[1][1])+(Hram[i]//2)
 
-                AS=int(vmdict[1][2])+(Hsize[i]/2)  
+                AS=int(vmdict[1][2])+(Hsize[i]//2)  
 
         #******************Average Strategy**********************
 
@@ -347,11 +349,11 @@ for i in range(m):
 
                 if i>0 and (i+1)<=m:
 
-                        MN1=MN+(Hmips[i]/2)
+                        MN1=MN+(Hmips[i]//2)
 
-                        MR1=MR+(Hram[i]/2)
+                        MR1=MR+(Hram[i]//2)
 
-                        MS1=MS+(Hsize[i]/2)  
+                        MS1=MS+(Hsize[i]//2)  
 
 
 
@@ -373,11 +375,11 @@ for i in range(m):
 
                                 if i>0 and (i+1)<=m-1:
 
-                                        DN=(Hmips[0]/2)+(Hmips[i]/2)
+                                        DN=(Hmips[0]//2)+(Hmips[i]//2)
 
-                                        DR=(Hram[0]/2)+(Hram[i]/2)
+                                        DR=(Hram[0]//2)+(Hram[i]//2)
 
-                                        DS=(Hsize[0]/2)+(Hsize[i]/2)  
+                                        DS=(Hsize[0]//2)+(Hsize[i]//2)  
 
                 
 
@@ -393,11 +395,11 @@ for i in range(m):
 
                                         else:
 
-                                                DN=(Hmips[i]/2)
+                                                DN=(Hmips[i]//2)
 
-                                                DR=(Hram[i]/2)
+                                                DR=(Hram[i]//2)
 
-                                                DS=(Hsize[i]/2) 
+                                                DS=(Hsize[i]//2) 
 
                                                 V=[DN,DR,DS]
 
@@ -409,11 +411,11 @@ for i in range(m):
 
                                 else:
 
-                                        DN=(Hmips[i]/2)
+                                        DN=(Hmips[i]//2)
 
-                                        DR=(Hram[i]/2)
+                                        DR=(Hram[i]//2)
 
-                                        DS=(Hsize[i]/2) 
+                                        DS=(Hsize[i]//2) 
 
                                         if DN <= Hmips[i] and DR <= Hram[i] and DS <= Hsize[i]:
 
@@ -451,11 +453,11 @@ for i in range(m):
 
                                         print "******************************"
 
-                                        DN=(Hmips[0]/2)+(Hmips[i]/2)
+                                        DN=(Hmips[0]//2)+(Hmips[i]//2)
 
-                                        DR=(Hram[0]/2)+(Hram[i]/2)
+                                        DR=(Hram[0]//2)+(Hram[i]//2)
 
-                                        DS=(Hsize[0]/2)+(Hsize[i]/2)  
+                                        DS=(Hsize[0]//2)+(Hsize[i]//2)  
                 
 
                                         if DN <= Hmips[i] and DR <= Hram[i] and DS <= Hsize[i]:
@@ -472,11 +474,11 @@ for i in range(m):
 
                                                 print "*************************"
 
-                                                DN=(Hmips[i]/2)
+                                                DN=(Hmips[i]//2)
 
-                                                DR=(Hram[i]/2)
+                                                DR=(Hram[i]//2)
 
-                                                DS=(Hsize[i]/2) 
+                                                DS=(Hsize[i]//2) 
 
                                                 V=[DN,DR,DS]
 
@@ -488,11 +490,11 @@ for i in range(m):
 
                                 else:
 
-                                        DN=(Hmips[i]/2)
+                                        DN=(Hmips[i]//2)
 
-                                        DR=(Hram[i]/2)
+                                        DR=(Hram[i]//2)
 
-                                        DS=(Hsize[i]/2) 
+                                        DS=(Hsize[i]//2) 
 
                                         if DN <= Hmips[i] and DR <= Hram[i] and DS <= Hsize[i]:
 
@@ -520,7 +522,7 @@ print "********************END OF ROUND2************************\n\n"
 #Name : K Naveen Kumar
 
 
-print "\n************ROUND 3 : EXECUTION OF TASKS USING VIRTUAL MACHINES*****************\n"    
+print "\n************ROUND 3 : EXECUTION OF Tasks USING VIRTUAL MACHINES*****************\n"    
 
 
 #Vms specifications
@@ -554,7 +556,7 @@ for i in range(len(Hosts)):
         
 print "We have following remaining resources after creation of initial virtual:\nHosts     : ",Hosts,"\nRAMs      : ",Hram,"\nSizes     : ",Hsize,"\nMIPS      : ",Hmips,"\n"
 
-#*/*/*/**/*/*/*/*/*/
+#*//*//*//**//*//*//*//*//*//
 print "Execution of Tasks in HQ......\n"
                 
 #Tasks specifications
@@ -575,13 +577,15 @@ TBurst=[int(inputdata[Tasks[i]][5]) for i in range(len(Tasks))]   #contains ram 
 
 TDL=[int(inputdata[Tasks[i]][6]) for i in range(len(Tasks))]  #contains size list of Tasks
               
-Talloc={} #contains allocation details of tasks to Vms during execution
+Talloc={} #contains allocation details of Tasks to Vms during execution
 
-TCT={} #contains completion time of tasks
+TCT={} #contains completion time of Tasks
 
-TTAT={} #contains turnaround time of tasks
+TTAT={} #contains turnaround time of Tasks
 
-TWT={} #contains waiting times of tasks
+TWT={} #contains waiting times of Tasks
+
+TExec={} #contains execution times of Tasks
                 
 print "We have following Tasks to be executed in HQ with specifications:\nTasks                   :     ",Tasks,"\nRAMs                    :     ",Tram,"\nSizes                   :     ",Tsize,"\nNo of Instructions      :     ",Tno_of_Instr,"\nArrivalTime             :     ",TArrival,"\nBurstTime               :     ",TBurst,"\nDeadLine                :     ",TDL,"\n"
          
@@ -589,156 +593,401 @@ print "We have following Tasks to be executed in HQ with specifications:\nTasks 
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 n=len(Tasks)
+
 m=len(Vms)
+
 l=len(Hosts)
-Talloc={}
+
+Talloc={} #contains allocated tasks
+
 Vflags=[0 for i in range(m)]
+
 Vtimer=[0 for i in range(m)]
 
-completiontasks=[0 for i in range(n)]
+completionTasks=[]
+
 #****************now round3 starts
+
+
 count=0
-while(count<2):     
+while(count<3):     
+
          i=0 
+
          n=len(Tasks)
+
          m=len(Vms)
+
+         #print "\n\n\nEnter for  count = %d\n\n\n" %count
+
+         #print Vflags,Tasks,TBurst,TDL,Tram,Tsize,Tno_of_Instr,Vms,Vram,Vsize,Vmips,"\n\n",Vtimer,"\n\n"
+
          while(i<n):
+
                 for j in range(m):
+
                      if(Tram[i]<=Vram[j] and Tsize[i]<=Vsize[j] and Tno_of_Instr[i]<=Vmips[j] and Vflags[j]==0):
+
                         Talloc[Vms[j]]=Tasks[i]
+
+                        #print "\n\n",Talloc,"\n\n"
+
                         Vflags[j]=1
+
+                        break
+
+                    
+
                 if Tasks[i] not in Talloc.values():
-                        print "Trying to create a new virtual machine for Task %s\n" %Tasks[i]
+
+                        print "Trying to create a new virtual machine for Tasks %s\n" %Tasks[i]
+
                         mips=(Tno_of_Instr[i])
+
                         ram=(Tram[i])
+
                         size=(Tsize[i])
+
                         for k in range(l): 
+
                                     if mips <= Hmips[k] and ram <= Hram[k] and size <= Hsize[k]:
+
                                           V=[mips,ram,size]
+
                                           Vms.append(i+1)
+
                                           vmdict[(Vms[len(Vms)-1])]=V        
+
                                           Vram.append(ram)
+
                                           Vsize.append(size)
+
                                           Vmips.append(mips)
+
                                           Hram[i]=Hram[i]-Vram[i]
+
                                           Hsize[i]=Hsize[i]-Vsize[i]
+
                                           Hmips[i]=Hmips[i]-Vmips[i]
+
                                           Talloc[Vms[len(Vms)-1]]=Tasks[i]
+
                                           Vflags.append(1)
+
                                           Vtimer.append(0)
+
                  
+
                         if Tasks[i] not in Talloc.values():
-                                    print "Unable to create a new virtual machine for Task %s,due to lack of resources,hence waiting for existing Vms to get free\n" %Tasks[i]
+
+                                    print "Unable to create a new virtual machine for Tasks %s,due to lack of resources,hence waiting for existing Vms to get free\n" %Tasks[i]
+
                                     index=Tasks.index(Tasks[i])
+
                                     b=Tasks.pop(index)
+
                                     Tasks.append(b)
+
                                     index=Tram.index(Tram[i])
+
                                     b=Tram.pop(index)
+
                                     Tram.append(b)
+
                                     index=Tsize.index(Tsize[i])
+
                                     b=Tsize.pop(index)
+
                                     Tsize.append(b)
+
                                     index=Tno_of_Instr.index(Tno_of_Instr[i])
+
                                     b=Tno_of_Instr.pop(index)
+
                                     Tno_of_Instr.append(b)
+
                                     index=TBurst.index(TBurst[i])
+
                                     b=TBurst.pop(index)
+
                                     TBurst.append(b)
+
                                     index=TDL.index(TDL[i])
+
                                     b=TDL.pop(index)
+
                                     TDL.append(b)
+
                                     i=i-1
+
                                     n=n-1
                 i=i+1
-         print "Allocated virtual machines for Tasks are as follows\n",Talloc.keys(),Talloc.values(),"\n\n"                                  
-         print "\n\n\n",Tasks,TDL,TBurst,"\n\n\n"
-         
-         h=0 
-         m=len(Talloc.keys())
-         valloc=[]
-         i=0
-         for i in range(m):              
-              for k,v in Talloc.items():
-                  if Tasks[i]==v:
-                        valloc.append(k)          
-         print "\n\n",valloc,"\n\n"
-         
-         counter=0
-         while(h<m):
-                 if (TDL[h] > TQ1 and TDL[h] > Vtimer[valloc[counter]-1] and TBurst[h]>0):
-                          print "The task entered here is :  %s" %Tasks[h]
-                          Executiontime=TDL[h]-Vtimer[valloc[counter]-1]
-                          if Executiontime > TQ1:
-                                Executiontime = TQ1
-                          elif TQ1>TBurst[h] and Executiontime >= TQ1:
-                                Executiontime = TBurst[h]
-                          Vtimer[valloc[counter]-1]=Vtimer[valloc[counter]-1]+Executiontime
-                          print "The Vtimer here is :  %d" %Vtimer[valloc[counter]-1]
-                          TBurst[h]=TBurst[h]-Executiontime                       
-                          if (TBurst[h]==0 or TDL[h]<=Vtimer[valloc[counter]-1]):
-                                completiontasks[h]=1
-                                TCT[Tasks[h]]=Vtimer[valloc[counter]-1]
-                          print TCT
-                          index=Tasks.index(Tasks[h])
-                          b=Tasks.pop(index)
-                          Tasks.append(b)
-                          index=Tram.index(Tram[h])
-                          b=Tram.pop(index)
-                          Tram.append(b)
-                          index=Tsize.index(Tsize[h])
-                          b=Tsize.pop(index)
-                          Tsize.append(b)
-                          index=Tno_of_Instr.index(Tno_of_Instr[h])
-                          b=Tno_of_Instr.pop(index)
-                          Tno_of_Instr.append(b)
-                          index=TBurst.index(TBurst[h])
-                          b=TBurst.pop(index)
-                          TBurst.append(b)
-                          index=TDL.index(TDL[h])
-                          b=TDL.pop(index)
-                          TDL.append(b)
-                          Vflags[valloc[counter]-1]=0
-                          counter=counter+1
-                        
-                 elif (TDL[h] <= TQ1 and TDL[h] > Vtimer[valloc[counter]-1] and TBurst[h]>0): 
-                          print "The task entered here here is : %s" %Tasks[h]      
-                          Executiontime=TQ1-Vtimer[valloc[counter]-1]
-                          print "The Executiontime here here is :  %d" %Executiontime
-                          if Executiontime > TDL[h]:
-                                Executiontime = TDL[h]
-                          elif TDL[h]>TBurst[h] and Executiontime >= TDL[h]:
-                                Executiontime = TBurst[h]
-                          print "The Executiontime here here is :  %d" %Executiontime
-                          Vtimer[valloc[counter]-1]=Vtimer[valloc[counter]-1]+Executiontime
-                          print "The Vtimer here here is :  %d" %Vtimer[valloc[counter]-1]
-                          TBurst[h]=TBurst[h]-Executiontime   
-                          if (TBurst[h]==0 or TDL[h]<=Vtimer[valloc[counter]-1]):
-                                completiontasks[h]=1
-                                TCT[Tasks[h]]=Vtimer[valloc[counter]-1]
-                          print TCT
-                          index=Tasks.index(Tasks[h])
-                          b=Tasks.pop(index)
-                          index=Tram.index(Tram[h])
-                          b=Tram.pop(index)
-                          index=Tsize.index(Tsize[h])
-                          b=Tsize.pop(index)
-                          index=Tno_of_Instr.index(Tno_of_Instr[h])
-                          b=Tno_of_Instr.pop(index)
-                          index=TBurst.index(TBurst[h])
-                          b=TBurst.pop(index)
-                          index=TDL.index(TDL[h])
-                          b=TDL.pop(index)
-                          Vflags[valloc[counter]-1]=0
-                          counter=counter+1
-                          h=h-1
-                          m=m-1
-                 h=h+1
-         count=count+1                
 
-print '\n\n',Vtimer,Tasks,TCT,TBurst,TDL,'\n\n'     
+         print "Allocated virtual machines for Tasks for execution are as follows\n",Talloc.keys(),Talloc.values(),"\n\n"                                  
+
+         #print "\n\n\n",Tasks,TDL,TBurst,"\n\n\n"
+
+         
+
+         h=0 
+
+         m=len(Talloc.keys())
+
+         valloc=[]
+
+         i=0
+
+         if m > n:
+
+                m=n
+
+         for i in range(m):              
+
+              for k,v in Talloc.items():
+
+                  if Tasks[i]==v:
+
+                        valloc.append(k)          
+
+         #print "\n\n",valloc,"\n\n"
+
+         
+
+         counter=0
+
+         while(h<m):
+
+                 if (TDL[h] > TQ1 and TDL[h] > Vtimer[valloc[counter]-1] and TBurst[h]>0):
+
+                          #print "The Tasks entered here is :  %s" %Tasks[h]
+
+                          Executiontime=TDL[h]-Vtimer[valloc[counter]-1]
+
+                          if Executiontime > TQ1:
+
+                                Executiontime = TQ1
+
+                          elif TQ1>TBurst[h] and Executiontime >= TQ1:
+
+                                Executiontime = TBurst[h]
+                          
+                          Vtimer[valloc[counter]-1]=Vtimer[valloc[counter]-1]+Executiontime
+
+                         # print "The Vtimer here is :  %d" %Vtimer[valloc[counter]-1]
+
+                          TBurst[h]=TBurst[h]-Executiontime                       
+
+                          if (TBurst[h]==0 or TDL[h]<=Vtimer[valloc[counter]-1]):
+
+                                completionTasks.append(1)
+
+                                
+
+                                TCT[Tasks[h]]=Vtimer[valloc[counter]-1]
+                                
+                                if Tasks[h] in TExec.keys():
+
+                                        TExec[Tasks[h]]=TExec[Tasks[h]]+Executiontime
+
+                                else:
+
+                                        TExec[Tasks[h]]=Executiontime
+
+                                index=Tasks.index(Tasks[h])
+
+                                b=Tasks.pop(index)
+
+                                index=Tram.index(Tram[h])
+
+                                b=Tram.pop(index)
+
+                                index=Tsize.index(Tsize[h])
+
+                                b=Tsize.pop(index)
+
+                                index=Tno_of_Instr.index(Tno_of_Instr[h])
+
+                                b=Tno_of_Instr.pop(index)
+
+                                index=TBurst.index(TBurst[h])
+
+                                b=TBurst.pop(index)
+
+                                index=TDL.index(TDL[h])
+
+                                b=TDL.pop(index)
+
+                                Executiontime=0
+
+                          if (len(Tasks)>0):
+                                
+                                if Tasks[h] in TExec.keys():
+
+                                        TExec[Tasks[h]]=TExec[Tasks[h]]+Executiontime
+
+                                else:
+
+                                        TExec[Tasks[h]]=Executiontime
+
+                                #print "Execution times",TExec,"\n\n"
+
+                                index=Tasks.index(Tasks[h])
+
+                                b=Tasks.pop(index)
+
+                                Tasks.append(b)
+
+                                index=Tram.index(Tram[h])
+
+                                b=Tram.pop(index)
+
+                                Tram.append(b)
+
+                                index=Tsize.index(Tsize[h])
+
+                                b=Tsize.pop(index)
+
+                                Tsize.append(b)
+
+                                index=Tno_of_Instr.index(Tno_of_Instr[h])
+
+                                b=Tno_of_Instr.pop(index)
+
+                                Tno_of_Instr.append(b)
+
+                                index=TBurst.index(TBurst[h])
+
+                                b=TBurst.pop(index)
+
+                                TBurst.append(b)
+
+                                index=TDL.index(TDL[h])
+
+                                b=TDL.pop(index)
+
+                                TDL.append(b)
+
+                                Vflags[valloc[counter]-1]=0
+
+                                counter=counter+1
+
+                                h=h-1
+
+                                m=m-1
+                                
+                          else:
+
+                                Vflags[valloc[counter]-1]=0
+
+                                break
+
+                          
+
+                 elif (TDL[h] <= TQ1 and TDL[h] > Vtimer[valloc[counter]-1] and TBurst[h]>0): 
+
+                          Executiontime=TQ1-Vtimer[valloc[counter]-1]
+
+                          if Executiontime > TDL[h]:
+
+                                Executiontime = TDL[h]
+
+                          elif TDL[h]>TBurst[h] and Executiontime >= TDL[h]:
+
+                                Executiontime = TBurst[h]
+
+                          Vtimer[valloc[counter]-1]=Vtimer[valloc[counter]-1]+Executiontime
+
+                          TBurst[h]=TBurst[h]-Executiontime   
+
+                          if (TBurst[h]==0 or TDL[h]<=Vtimer[valloc[counter]-1]):
+
+                                completionTasks.append(1)
+                                
+                                TCT[Tasks[h]]=Vtimer[valloc[counter]-1]
+
+                                if Tasks[h] in TExec.keys():
+                                        TExec[Tasks[h]]=TExec[Tasks[h]]+Executiontime
+                                else:
+                                        TExec[Tasks[h]]=Executiontime
+
+                          index=Tasks.index(Tasks[h])
+
+                          b=Tasks.pop(index)
+
+                          index=Tram.index(Tram[h])
+
+                          b=Tram.pop(index)
+
+                          index=Tsize.index(Tsize[h])
+
+                          b=Tsize.pop(index)
+
+                          index=Tno_of_Instr.index(Tno_of_Instr[h])
+
+                          b=Tno_of_Instr.pop(index)
+
+                          index=TBurst.index(TBurst[h])
+
+                          b=TBurst.pop(index)
+
+                          index=TDL.index(TDL[h])
+
+                          b=TDL.pop(index)
+
+                          Vflags[valloc[counter]-1]=0
+
+                          counter=counter+1
+
+                          h=h-1
+
+                          m=m-1
+
+                 h=h+1
+         del(Talloc)
+         count=count+1
+         Talloc={}
+                        
+
+#print '\n\n',Vtimer,Tasks,TCT,TBurst,TDL,Vflags,TExec,'\n\n'     
                      
-                     
-                     
+for k,v in TCT.items():
+        TTAT[k]=TCT[k]-int(inputdata[k][4])
+        TWT[k]=TTAT[k]-TExec[k]
+
+for k in TExec.keys():
+        T=int(TExec[k])/int(inputdata[k][5])
+        T=T*int(inputdata[k][1])
+        TExec[k]=T
+
+Tasks=[k for k,v in TCT.items()]
+
+l2=[int(inputdata[Tasks[i]][0]) for i in range(len(Tasks))]
+
+insertionsort(l2,Tasks)
+
+#*******************displaying output of execution of HQ
+
+Tram=[int(inputdata[Tasks[i]][2]) for i in range(len(Tasks))]   #contains ram list of Tasks
+
+Tsize=[int(inputdata[Tasks[i]][3]) for i in range(len(Tasks))]  #contains size list of Tasks
+
+Tno_of_Instr=[int(inputdata[Tasks[i]][1]) for i in range(len(Tasks))]  #contains Number Of Instructions list of Tasks
+
+TArrival=[int(inputdata[Tasks[i]][4]) for i in range(len(Tasks))]  #contains Mips list of Tasks
+
+TBurst=[int(inputdata[Tasks[i]][5]) for i in range(len(Tasks))]   #contains ram list of Tasks
+
+TDL=[int(inputdata[Tasks[i]][6]) for i in range(len(Tasks))]  #contains size list of Tasks
+              
+TCTime=[int(TCT[Tasks[i]]) for i in range(len(Tasks))] #contains completion time of Tasks
+
+TTATime=[int(TTAT[Tasks[i]]) for i in range(len(Tasks))] #contains turnaround time of Tasks
+
+TWTime=[int(TWT[Tasks[i]]) for i in range(len(Tasks))] #contains waiting times of Tasks
+
+TExecTime=[int(TExec[Tasks[i]]) for i in range(len(Tasks))] #contains execution times of Tasks
+                
+print "We have following output after executing Tasks in HQ:\nTasks                       :     ",Tasks,"\nRAMs                        :     ",Tram,"\nSizes                       :     ",Tsize,"\nNo of Instructions          :     ",Tno_of_Instr,"\nArrivalTime                 :     ",TArrival,"\nBurstTime                   :     ",TBurst,"\nDeadLine                    :     ",TDL,"\nTasks completionTime        :     ",TCTime,"\nTasks TurnAroundtime        :     ",TTATime,"\nTasks WaitingTime           :     ",TWTime,"\nNo.of Instructions Executed :     ",TExecTime,"\n\n"       
                      
                      
                      
