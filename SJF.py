@@ -1,4 +1,4 @@
-#FCFS algorithm  implementation using python
+#SJF algorithm  implementation using python
 
 #Date : 16-6-2017
 
@@ -482,7 +482,7 @@ print "We have following remaining resources after creation of initial virtual:\
 #************  
 #Tasks specifications
 
-l1=[int(v[0]) for k,v in inputdata.items() if len(v)==8 ] #contains priority list of Tasks
+l1=[int(v[5]) for k,v in inputdata.items() if len(v)==8 ] #contains priority list of Tasks
 
 keyArray=[k  for k,v in inputdata.items() if len(v)==8]         #contains corresponding Tasks
 
@@ -936,7 +936,7 @@ print "END OF THE ALGORITHM.....\n\n"
 
 print "To plot results type python outputplot.py....\n\n"
 
-filename='outputFCFS'+filename
+filename='outputSJF'+filename
 
 with open(filename,'w') as output_file:
 

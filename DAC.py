@@ -1837,7 +1837,7 @@ print "We have following output after executing Tasks in HQ,MQ and LQ:\nTasks   
 #************COMPLETION OF ALGORITHM**********                     
 print "END OF THE ALGORITHM.....\n\n"
 
-print "PLOTTING THE RESULTS....\n\n"
+print "To plot results type python outputplot.py....\n\n"
 
 filename='outputDAC'+filename
 
