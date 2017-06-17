@@ -103,7 +103,7 @@ print "The keyArray containing sorted Tasks based on priorities:" ,keyArray
 
 
 
-LAMBDA = 2     #LAMBDA which regulates the number of Tasks in HQ,MQ,LQ respectively
+LAMBDA = 1     #LAMBDA which regulates the number of Tasks in HQ,MQ,LQ respectively
 
 n=len(keyArray) #n : number of Tasks
 
@@ -607,7 +607,8 @@ Vtimer=[0 for i in range(m)]
 
 #****************now round3 starts
 
-while(len(Tasks)>0):     
+count=0
+while(count <4 and len(Tasks)>0):     
 
          i=0 
 
@@ -946,11 +947,21 @@ while(len(Tasks)>0):
 
                  h=h+1
         
+         if len(Talloc.keys())==0:
+                
+                print "Resources not sufficient to execute Task %s Try giving more resources...\n\n" %Tasks[h]
+
+                TCT[Tasks[h]]=0
+                
+                TExec[Tasks[h]]=0
+                
+                break
+        
          del(Talloc)
 
          Talloc={}
                         
-
+         count=count+1
       
                      
 #****************************   COMPLETION OF EXECUTION OF TASKS IN HQ   *********************************                     
@@ -997,8 +1008,9 @@ Vflags=[0 for i in range(m)]
 
 count=0
 
-while(count<2 and len(Tasks)>0):     
+while(count<4 and len(Tasks)>0): 
 
+         
          i=0 
 
          n=len(Tasks)
@@ -1109,12 +1121,15 @@ while(count<2 and len(Tasks)>0):
                                     i=i-1
 
                                     n=n-1
+                                    
+                                    print "I am here\n\n",Tasks,"\n\n"
                 i=i+1
 
          print "Allocated virtual machines for Tasks for execution are as follows\n",Talloc.keys(),Talloc.values(),"\n\n"                                  
 
          #print "\n\n\n",Tasks,TDL,TBurst,"\n\n\n"
 
+         
          
 
          h=0 
@@ -1145,7 +1160,7 @@ while(count<2 and len(Tasks)>0):
 
          while(h<m):
                  alreadydone=0
-                 #print "\n\nVtimer",Tasks[h],Vtimer[valloc[counter]-1],"\n\n" 
+#                 print "\n\nVtimer",Tasks[h],Vtimer[valloc[counter]-1],"\n\n" 
 
                  if (TDL[h] > TQ2 and TDL[h] > Vtimer[valloc[counter]-1] and TBurst[h]>0):
 
@@ -1153,19 +1168,21 @@ while(count<2 and len(Tasks)>0):
 
                           Executiontime=TQ2+Vtimer[valloc[counter]-1]
 
+                        
                           if Executiontime>TDL[h] and TDL[h]>Vtimer[valloc[counter]-1]:
                                 
                                 #print "You are right i am here\n\n"
                                 
                                 Executiontime = TDL[h] - Vtimer[valloc[counter]-1]
-                          #print "here here bursttime,executiontime",TBurst[h],Executiontime,"\n\n"  
+                          
+ #                         print "here here bursttime,executiontime",TBurst[h],Executiontime,TDL[h],"\n\n"  
                           if Executiontime > TQ2:
 
                                 Executiontime = TQ2
 
-                           #     print "here here bursttime,executiontime",TBurst[h],Executiontime,"\n\n"                              
+#                                print "here here bursttime,executiontime",TBurst[h],Executiontime,"\n\n"                              
                                 
-                          if TQ2>TBurst[h] and Executiontime >= TQ2:
+                          if Executiontime>TBurst[h]:
 
                                 Executiontime = TBurst[h]
                           
@@ -1351,6 +1368,16 @@ while(count<2 and len(Tasks)>0):
                           m=m-1
 
                  h=h+1
+         
+         if len(Talloc.keys())==0:
+                
+                print "Resources not sufficient to execute Task %s Try giving more resources...\n\n" %Tasks[h]
+
+                TCT[Tasks[h]]=0
+                
+                TExec[Tasks[h]]=0
+                
+                break
          
          del(Talloc)
 
@@ -1740,10 +1767,22 @@ while(count<2 and len(Tasks)>0):
                         b=TDL.pop(index)
 
                         h=h-1
+                        
+                        counter=counter+1
 
                         m=m-1
 
                  h=h+1
+         
+         if len(Talloc.keys())==0:
+                
+                print "Resources not sufficient to execute Task %s Try giving more resources...\n\n" %Tasks[h]
+
+                TCT[Tasks[h]]=0
+                
+                TExec[Tasks[h]]=0
+                
+                break
          
          del(Talloc)
 
@@ -1800,19 +1839,37 @@ print "END OF THE ALGORITHM.....\n\n"
 
 print "PLOTTING THE RESULTS....\n\n"
 
+filename='outputDAC'+filename
 
-#x=[i for i in range(len(Tasks))]
-#y1=TTATime
-#y2=TWTime
-#y3=TExecTime
+with open(filename,'w') as output_file:
 
-#plot1=pl.plot(x,y1,'r')
-#plot2=pl.plot(x,y2,'g')
-#pl.plot(x,y3,'b')
-#pl.legend([plot1, plot2], ('Turnaround Times', 'Waiting Times'), 'upper right')
-#pl.grid('on')
-#pl.show()
-
-
-
+        for i in range(len(TTATime)):
+                
+                if i==len(TTATime)-1:
+                
+                        output_file.write("%d\n" %TTATime[i])
+                        
+                else :
+                
+                        output_file.write("%d," %TTATime[i])
+        
+        for i in range(len(TWTime)):
+                
+                if i==len(TTATime)-1:
+                
+                        output_file.write("%d\n" %TWTime[i])
+                        
+                else :
+                
+                        output_file.write("%d," %TWTime[i])
+        
+        for i in range(len(TExecTime)):
+                
+                if i==len(TTATime)-1:
+                
+                        output_file.write("%d\n" %TExecTime[i])
+                        
+                else :
+                
+                        output_file.write("%d," %TExecTime[i])
 

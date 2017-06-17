@@ -1,6 +1,6 @@
-#DAC algorithm Round1 implementation using python
+#FCFS algorithm  implementation using python
 
-#Date : 6-6-2017
+#Date : 16-6-2017
 
 #Name : K Naveen Kumar
 
@@ -32,8 +32,6 @@ with open(filename,'r') as input_file:
 #used insertionsort for all kinds of sorting that take place in round1
 
 #function for insertionsort
-
-print "\n********************ROUND 1 : DIVISION OF Tasks INTO HQ,MQ,LQ************************\n" 
 
 def insertionsort(list1,list2):
 
@@ -94,7 +92,6 @@ keyArray=[k  for k,v in inputdata.items() if len(v)==8]         #contains corres
 insertionsort(l1,keyArray) #calling insertionsort to sort based on priority
 
         
-
 print "The keyArray containing sorted Tasks based on priorities:" ,keyArray
 
      
@@ -117,7 +114,6 @@ N3= (n-(N1+N2))
 
 
 
-print "\nThe number of Tasks in \nHQ  : %d\nMQ  : %d\nLQ  : %d" %(N1,N2,N3)
 
 #*****************division of elements into HQ,MQ,LQ 
 
@@ -130,8 +126,6 @@ MQ=[keyArray[i] for i in range(N1,N1+N2)]
 LQ=[keyArray[i] for i in range(N1+N2,n)]
 
 Tasks=HQ+MQ+LQ
-
-print "\nTasks in HQ:",HQ,"\n","Tasks in MQ:",MQ,"\n","Tasks in LQ:",LQ,"\n"
 
 
 
@@ -192,27 +186,9 @@ insertionsort(l1,l2) #calling insertion sort for sorting LQ Tasks based on deadl
 LQ=[str(i) for i in l2]
 
 
-
-print "The Finalized internally sorted HQ based on deadlines:",HQ,'\n',"The Finalized internally sorted MQ based on deadlines:",MQ,'\n',"The Finalized internally sorted LQ based on deadlines:",LQ
-
-
-
-
-print "********************END OF ROUND1************************\n\n" 
-
 print "\n********************ROUND 2 - CREATION OF VIRTUAL MACHINES************************\n"    
 
-
-
 #*************************************************************************************
-
-#DAC algorithm Round2 implementation using python
-
-#Date : 7-6-2017
-
-#Name : K Naveen Kumar
-
-
 
 #hosts specifications
 
@@ -470,22 +446,7 @@ for i in range(m):
 
                                                                      
 
-print "********************END OF ROUND2************************\n\n" 
-
-
-
-#*********************************ROUND 3 : Execution of Tasks using  virtual machines***********************                                
-#*************************************************************************************
-
-#DAC algorithm Round3 implementation using python
-
-#Date : 9-6-2017
-
-#Name : K Naveen Kumar
-
-
-print "\n************ROUND 3 : EXECUTION OF Tasks USING VIRTUAL MACHINES*****************\n"    
-
+#************************************
 
 #Vms specifications
 
@@ -519,12 +480,15 @@ for i in range(len(Hosts)):
 print "We have following remaining resources after creation of initial virtual:\nHosts     : ",Hosts,"\nRAMs      : ",Hram,"\nSizes     : ",Hsize,"\nMIPS      : ",Hmips,"\n"
 
 #************  
-#****************************START OF LQ EXECUTION IN FCFS FASHION                     
-print "Execution of Tasks in LQ......\n\n"
-                
 #Tasks specifications
+l1=[int(v[0]) for k,v in inputdata.items() if len(v)==8 ] #contains priority list of Tasks
+
+#keyArray=[k  for k,v in inputdata.items() if len(v)==8]         #contains corresponding Tasks
 
 
+#insertionsort(l1,keyArray) #calling insertionsort to sort based on priority
+
+#Tasks=keyArray
 
 Tram=[int(inputdata[Tasks[i]][2]) for i in range(len(Tasks))]   #contains ram list of Tasks
 
@@ -540,7 +504,7 @@ TDL=[int(inputdata[Tasks[i]][6]) for i in range(len(Tasks))]  #contains size lis
               
 Talloc={} #contains allocation details of Tasks to Vms during execution 
 
-print "We have following Tasks to be executed in MQ with specifications:\nTasks                   :     ",Tasks,"\nRAMs                    :     ",Tram,"\nSizes                   :     ",Tsize,"\nNo of Instructions      :     ",Tno_of_Instr,"\nArrivalTime             :     ",TArrival,"\nBurstTime               :     ",TBurst,"\nDeadLine                :     ",TDL,"\n"    
+print "We have following Tasks to be executed with specifications:\nTasks                   :     ",Tasks,"\nRAMs                    :     ",Tram,"\nSizes                   :     ",Tsize,"\nNo of Instructions      :     ",Tno_of_Instr,"\nArrivalTime             :     ",TArrival,"\nBurstTime               :     ",TBurst,"\nDeadLine                :     ",TDL,"\n"    
 
 #print TBurst
                  
@@ -572,7 +536,7 @@ Vtimer=[0 for i in range(m)]
 
 count=0
 
-while(count<2 and len(Tasks)>0):     
+while(count<5 and len(Tasks)>0):     
 
          i=0 
 
@@ -627,11 +591,11 @@ while(count<2 and len(Tasks)>0):
 
                                           Vmips.append(mips)
 
-                                          Hram[i]=Hram[i]-Vram[i]
+                                          Hram[k]=Hram[k]-Vram[k]
 
-                                          Hsize[i]=Hsize[i]-Vsize[i]
+                                          Hsize[k]=Hsize[k]-Vsize[k]
 
-                                          Hmips[i]=Hmips[i]-Vmips[i]
+                                          Hmips[k]=Hmips[k]-Vmips[k]
 
                                           Talloc[Vms[len(Vms)-1]]=Tasks[i]
 
@@ -698,7 +662,7 @@ while(count<2 and len(Tasks)>0):
                
          print "Allocated virtual machines for Tasks for execution are as follows\n",Talloc.keys(),Talloc.values(),"\n\n"                                  
 
-         #print "\n\n\n",Tasks,TDL,TBurst,"\n\n\n"
+         #print "\n\n\n",Vtimer,"\n\n\n"
 
          
 
@@ -722,7 +686,7 @@ while(count<2 and len(Tasks)>0):
 
                         valloc.append(k)          
 
-         #print "\n\n",valloc,"\n\n"
+         #print "\n\n",valloc,Tasks,"\n\n"
 
          
 
@@ -733,7 +697,7 @@ while(count<2 and len(Tasks)>0):
          
                  alreadydone=0
                  
-                 #print "\n\nDeadlines",Tasks,Tasks[h],Vtimer[valloc[counter]-1],TDL[h],"\n\n" 
+                 #print "\n\ni am here",Tasks[h],valloc[counter]-1,Vtimer[valloc[counter]-1],TDL[h],"\n\n" 
 
                  if (TDL[h] > Vtimer[valloc[counter]-1] and TBurst[h]>0):
 
@@ -905,6 +869,8 @@ while(count<2 and len(Tasks)>0):
 #                        index=TDL.index(TDL[h])
 
                         b=TDL.pop(index)
+                        
+                        counter=counter+1
 
                         h=h-1
 
@@ -938,7 +904,7 @@ l2=[int(inputdata[Tasks[i]][0]) for i in range(len(Tasks))]
 
 insertionsort(l2,Tasks)
 
-#*******************displaying output of execution of HQ and MQ and LQ
+#**************************************************
 
 Tram=[int(inputdata[Tasks[i]][2]) for i in range(len(Tasks))]   #contains ram list of Tasks
 
@@ -960,26 +926,43 @@ TWTime=[int(TWT[Tasks[i]]) for i in range(len(Tasks))] #contains waiting times o
 
 TExecTime=[int(TExec[Tasks[i]]) for i in range(len(Tasks))] #contains execution times of Tasks
                 
-print "We have following output after executing Tasks in HQ,MQ and LQ:\nTasks                       :     ",Tasks,"\nRAMs                        :     ",Tram,"\nSizes                       :     ",Tsize,"\nNo of Instructions          :     ",Tno_of_Instr,"\nArrivalTime                 :     ",TArrival,"\nBurstTime                   :     ",TBurst,"\nDeadLine                    :     ",TDL,"\nTasks completionTime        :     ",TCTime,"\nTasks TurnAroundtime        :     ",TTATime,"\nTasks WaitingTime           :     ",TWTime,"\nNo.of Instructions Executed :     ",TExecTime,"\n\n"                      
+print "We have following output after executing Tasks :\nTasks                       :     ",Tasks,"\nRAMs                        :     ",Tram,"\nSizes                       :     ",Tsize,"\nNo of Instructions          :     ",Tno_of_Instr,"\nArrivalTime                 :     ",TArrival,"\nBurstTime                   :     ",TBurst,"\nDeadLine                    :     ",TDL,"\nTasks completionTime        :     ",TCTime,"\nTasks TurnAroundtime        :     ",TTATime,"\nTasks WaitingTime           :     ",TWTime,"\nNo.of Instructions Executed :     ",TExecTime,"\n\n"                      
                      
 #************COMPLETION OF ALGORITHM**********                     
 print "END OF THE ALGORITHM.....\n\n"
 
 print "PLOTTING THE RESULTS....\n\n"
 
+filename='outputFCFS'+filename
 
-#x=[i for i in range(len(Tasks))]
-#y1=TTATime
-#y2=TWTime
-#y3=TExecTime
+with open(filename,'w') as output_file:
 
-#plot1=pl.plot(x,y1,'r')
-#plot2=pl.plot(x,y2,'g')
-#pl.plot(x,y3,'b')
-#pl.legend([plot1, plot2], ('Turnaround Times', 'Waiting Times'), 'upper right')
-#pl.grid('on')
-#pl.show()
-
-
-
-
+        for i in range(len(TTATime)):
+                
+                if i==len(TTATime)-1:
+                
+                        output_file.write("%d\n" %TTATime[i])
+                        
+                else :
+                
+                        output_file.write("%d," %TTATime[i])
+        
+        for i in range(len(TWTime)):
+                
+                if i==len(TTATime)-1:
+                
+                        output_file.write("%d\n" %TWTime[i])
+                        
+                else :
+                
+                        output_file.write("%d," %TWTime[i])
+        
+        for i in range(len(TExecTime)):
+                
+                if i==len(TTATime)-1:
+                
+                        output_file.write("%d\n" %TExecTime[i])
+                        
+                else :
+                
+                        output_file.write("%d," %TExecTime[i])
