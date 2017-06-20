@@ -100,7 +100,7 @@ print "The keyArray containing sorted Tasks based on priorities:" ,keyArray
 
 
 
-LAMBDA = 2     #LAMBDA which regulates the number of Tasks in HQ,MQ,LQ respectively
+LAMBDA = 1     #LAMBDA which regulates the number of Tasks in HQ,MQ,LQ respectively
 
 n=len(keyArray) #n : number of Tasks
 
@@ -577,14 +577,18 @@ while(count<5 and len(Tasks)>0):
                         ram=(Tram[i])
 
                         size=(Tsize[i])
+                        
+                        done=0
 
                         for k in range(l): 
+                        
+                                if done==0:
 
                                     if mips <= Hmips[k] and ram <= Hram[k] and size <= Hsize[k]:
 
                                           V=[mips,ram,size]
 
-                                          Vms.append(i+1)
+                                          Vms.append(len(Vms)+1)
 
                                           vmdict[(Vms[len(Vms)-1])]=V        
 
@@ -605,8 +609,13 @@ while(count<5 and len(Tasks)>0):
                                           Vflags.append(1)
 
                                           Vtimer.append(0)
+                                          
+                                          done=1
 
-                 
+                                else:
+                                    
+                                    break      
+                                          
 
                         if Tasks[i] not in Talloc.values():
 
@@ -932,7 +941,13 @@ TExecTime=[int(TExec[Tasks[i]]) for i in range(len(Tasks))] #contains execution 
 print "We have following output after executing Tasks :\nTasks                       :     ",Tasks,"\nRAMs                        :     ",Tram,"\nSizes                       :     ",Tsize,"\nNo of Instructions          :     ",Tno_of_Instr,"\nArrivalTime                 :     ",TArrival,"\nBurstTime                   :     ",TBurst,"\nDeadLine                    :     ",TDL,"\nTasks completionTime        :     ",TCTime,"\nTasks TurnAroundtime        :     ",TTATime,"\nTasks WaitingTime           :     ",TWTime,"\nNo.of Instructions Executed :     ",TExecTime,"\n\n"                      
                      
 #************COMPLETION OF ALGORITHM**********                     
+
 print "END OF THE ALGORITHM.....\n\n"
+
+print "Average Turnaround Time                 :          %f" %(sum(TTATime)/len(TTATime))
+print "Average Waiting Time                    :          %f" %(sum(TWTime)/len(TWTime))
+print "Total Number Of Instructions Executed   :          %d" % (sum(TExecTime))
+print "Given Total Number Of Instructions      :          %d\n\n" % (sum(Tno_of_Instr))
 
 print "To plot results type python outputplot.py....\n\n"
 

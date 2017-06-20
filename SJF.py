@@ -100,7 +100,7 @@ print "The keyArray containing sorted Tasks based on priorities:" ,keyArray
 
 
 
-LAMBDA = 2     #LAMBDA which regulates the number of Tasks in HQ,MQ,LQ respectively
+LAMBDA = 1     #LAMBDA which regulates the number of Tasks in HQ,MQ,LQ respectively
 
 n=len(keyArray) #n : number of Tasks
 
@@ -932,7 +932,14 @@ TExecTime=[int(TExec[Tasks[i]]) for i in range(len(Tasks))] #contains execution 
 print "We have following output after executing Tasks :\nTasks                       :     ",Tasks,"\nRAMs                        :     ",Tram,"\nSizes                       :     ",Tsize,"\nNo of Instructions          :     ",Tno_of_Instr,"\nArrivalTime                 :     ",TArrival,"\nBurstTime                   :     ",TBurst,"\nDeadLine                    :     ",TDL,"\nTasks completionTime        :     ",TCTime,"\nTasks TurnAroundtime        :     ",TTATime,"\nTasks WaitingTime           :     ",TWTime,"\nNo.of Instructions Executed :     ",TExecTime,"\n\n"                      
                      
 #************COMPLETION OF ALGORITHM**********                     
+
 print "END OF THE ALGORITHM.....\n\n"
+print "Average Turnaround Time                 :          %f" %(sum(TTATime)/len(TTATime))
+print "Average Waiting Time                    :          %f" %(sum(TWTime)/len(TWTime))
+print "Total Number Of Instructions Executed   :          %d" % (sum(TExecTime))
+print "Given Total Number Of Instructions      :          %d\n\n" % (sum(Tno_of_Instr))
+
+
 
 print "To plot results type python outputplot.py....\n\n"
 

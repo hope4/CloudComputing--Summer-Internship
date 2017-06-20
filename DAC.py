@@ -230,9 +230,6 @@ while(1):
        else:
 
           break
-
-       
-
   
 
 print "\nThe Calculated time quantum as follows:\nTQ1   :   %d\nTQ2   :   %d\n\n" %(TQ1,TQ2) 
@@ -608,6 +605,9 @@ Vtimer=[0 for i in range(m)]
 #****************now round3 starts
 
 count=0
+
+Halloc={}
+
 while(count <4 and len(Tasks)>0):     
 
          i=0 
@@ -615,13 +615,16 @@ while(count <4 and len(Tasks)>0):
          n=len(Tasks)
 
          m=len(Vms)
+         
+         extra=[]
 
          #print "\n\n\nEnter for  count = %d\n\n\n" %count
 
          #print Vflags,Tasks,TBurst,TDL,Tram,Tsize,Tno_of_Instr,Vms,Vram,Vsize,Vmips,"\n\n",Vtimer,"\n\n"
 
-         while(i<n):
-
+         
+         while(i<n):       
+                
                 for j in range(m):
 
                      if(Tram[i]<=Vram[j] and Tsize[i]<=Vsize[j] and Tno_of_Instr[i]<=Vmips[j] and Vflags[j]==0):
@@ -646,14 +649,19 @@ while(count <4 and len(Tasks)>0):
 
                         size=(Tsize[i])
 
+                        done=0
                         for k in range(l): 
 
+                                if done ==0:
+                                
                                     if mips <= Hmips[k] and ram <= Hram[k] and size <= Hsize[k]:
 
                                           V=[mips,ram,size]
 
-                                          Vms.append(i+1)
+                                          Vms.append(len(Vms)+1)
 
+                                          #print "\n\nVms..",i,Vms
+                                          
                                           vmdict[(Vms[len(Vms)-1])]=V        
 
                                           Vram.append(ram)
@@ -662,19 +670,31 @@ while(count <4 and len(Tasks)>0):
 
                                           Vmips.append(mips)
 
-                                          Hram[i]=Hram[i]-Vram[i]
+                                          Hram[k]=Hram[k]-Vram[len(Vms)-1]
 
-                                          Hsize[i]=Hsize[i]-Vsize[i]
+                                          Hsize[k]=Hsize[k]-Vsize[len(Vms)-1]
 
-                                          Hmips[i]=Hmips[i]-Vmips[i]
+                                          Hmips[k]=Hmips[k]-Vmips[len(Vms)-1]
 
+                                          
                                           Talloc[Vms[len(Vms)-1]]=Tasks[i]
+                                          
+                                          extra.append(Vms[len(Vms)-1])
+                                          
+                                          
+                                          Halloc[k]=extra
+                                          
+                                          #print "\n\n",Halloc
 
                                           Vflags.append(1)
 
                                           Vtimer.append(0)
+                                          
+                                          done=1
 
-                 
+                                else:
+                                
+                                          break;
 
                         if Tasks[i] not in Talloc.values():
 
@@ -754,7 +774,9 @@ while(count <4 and len(Tasks)>0):
          counter=0
 
          while(h<m):
+         
                  alreadydone=0
+                 
                  if (TDL[h] > TQ1 and TDL[h] > Vtimer[valloc[counter]-1] and TBurst[h]>0):
 
                           #print "The Tasks entered here is :  %s" %Tasks[h]
@@ -781,7 +803,13 @@ while(count <4 and len(Tasks)>0):
 
                           if (TBurst[h]==0 or TDL[h]<=Vtimer[valloc[counter]-1]):
 
-                                TCT[Tasks[h]]=Vtimer[valloc[counter]-1]
+                                if Tasks[h] in TCT.keys():
+                                
+                                        TCT[Tasks[h]]=TCT[Tasks[h]]+Vtimer[valloc[counter]-1]
+                                
+                                else:
+                                
+                                        TCT[Tasks[h]]=Vtimer[valloc[counter]-1]
                                 
                                 if Tasks[h] in TExec.keys():
 
@@ -837,6 +865,7 @@ while(count <4 and len(Tasks)>0):
 
                                         TExec[Tasks[h]]=Executiontime
 
+                                TCT[Tasks[h]]=TExec[Tasks[h]]
                                 #print "Execution times",TExec,"\n\n"
                                 if alreadydone==0:
                                         index=Tasks.index(Tasks[h])
@@ -906,7 +935,13 @@ while(count <4 and len(Tasks)>0):
 
                           if (TBurst[h]==0 or TDL[h]<=Vtimer[valloc[counter]-1]):
                                 
-                                TCT[Tasks[h]]=Vtimer[valloc[counter]-1]
+                                if Tasks[h] in TCT.keys():
+                                
+                                        TCT[Tasks[h]]=TCT[Tasks[h]]+Vtimer[valloc[counter]-1]
+                                
+                                else:
+                                
+                                        TCT[Tasks[h]]=Vtimer[valloc[counter]-1]
 
                                 if Tasks[h] in TExec.keys():
                                         TExec[Tasks[h]]=TExec[Tasks[h]]+Executiontime
@@ -958,16 +993,40 @@ while(count <4 and len(Tasks)>0):
                 break
         
          del(Talloc)
-
+         
          Talloc={}
                         
          count=count+1
       
                      
 #****************************   COMPLETION OF EXECUTION OF TASKS IN HQ   *********************************                     
-                     
+
+
+if (len(Halloc.keys())>0):
+
+        print "\nThe Extra Vms created in this process are...\n"
+
+        H=[k+1 for k,v in Halloc.items()]
+
+        NewVms=[v[0] for k,v in Halloc.items()]
+
+        print "Vms...",NewVms,"-->to Hosts-->",H,"\nWith Specifications...\nRam  :   ",Vram[NewVms[0]-1],"\nSize :   ",Vsize[NewVms[0]-1],"\nMips :   ",Vmips[NewVms[0]-1],"\n\n" 
+
+        print "Destroying the extra vms created...\nDestroying VM%d\n\n" %NewVms[0]                 
+
+        Hram[H[0]-1]=Hram[H[0]-1]+Vram[NewVms[0]-1]
+
+        Hsize[H[0]-1]=Hsize[H[0]-1]+Vsize[NewVms[0]-1]  
+
+        Hmips[H[0]-1]=Hmips[H[0]-1]+Vmips[NewVms[0]-1]        
+
+        print "\n\nWe have following resources after killing of virtual machines...:\nHosts     : ",Hosts,"\nRAMs      : ",Hram,"\nSizes     : ",Hsize,"\nMIPS      : ",Hmips,"\n"
+
 #*******************************STARTING EXECUTION OF TASKS IN MQ****************************************************
+
 print "Execution of Tasks in MQ......\n\n"
+
+
                 
 #Tasks specifications
 
@@ -1008,6 +1067,8 @@ Vflags=[0 for i in range(m)]
 
 count=0
 
+Halloc={}
+
 while(count<4 and len(Tasks)>0): 
 
          
@@ -1047,14 +1108,20 @@ while(count<4 and len(Tasks)>0):
                         ram=(Tram[i])
 
                         size=(Tsize[i])
-
-                        for k in range(l): 
+                        
+                        extra=[]
+                        done=0
+                        for k in range(l):
+                                
+                                if done==0: 
 
                                     if mips <= Hmips[k] and ram <= Hram[k] and size <= Hsize[k]:
 
                                           V=[mips,ram,size]
 
-                                          Vms.append(i+1)
+                                          Vms.append(len(Vms)+1)
+                                          
+                                          #print "\n\nVms...",Vms
 
                                           vmdict[(Vms[len(Vms)-1])]=V        
 
@@ -1064,19 +1131,27 @@ while(count<4 and len(Tasks)>0):
 
                                           Vmips.append(mips)
 
-                                          Hram[i]=Hram[i]-Vram[i]
+                                          Hram[k]=Hram[k]-Vram[len(Vms)-1]
 
-                                          Hsize[i]=Hsize[i]-Vsize[i]
+                                          Hsize[k]=Hsize[k]-Vsize[len(Vms)-1]
 
-                                          Hmips[i]=Hmips[i]-Vmips[i]
-
+                                          Hmips[k]=Hmips[k]-Vmips[len(Vms)-1]
+                                        
+                                          #print "Length\n\n",len(Vms)
+                                          extra.append(Vms[len(Vms)-1])
+                                          Halloc[k]=extra
                                           Talloc[Vms[len(Vms)-1]]=Tasks[i]
 
+                                          #print "\n\n",Talloc,"\n\n"
+                                          
                                           Vflags.append(1)
 
                                           Vtimer.append(0)
 
-                 
+                                          done=1
+                                else:
+                                    
+                                    break
 
                         if Tasks[i] not in Talloc.values():
 
@@ -1122,7 +1197,7 @@ while(count<4 and len(Tasks)>0):
 
                                     n=n-1
                                     
-                                    print "I am here\n\n",Tasks,"\n\n"
+                                    #print "I am here\n\n",Tasks,"\n\n"
                 i=i+1
 
          print "Allocated virtual machines for Tasks for execution are as follows\n",Talloc.keys(),Talloc.values(),"\n\n"                                  
@@ -1134,7 +1209,7 @@ while(count<4 and len(Tasks)>0):
 
          h=0 
 
-         m=len(Talloc.keys())
+         m=len(Tasks)
 
          valloc=[]
 
@@ -1152,7 +1227,7 @@ while(count<4 and len(Tasks)>0):
 
                         valloc.append(k)          
 
-         #print "\n\n",valloc,"\n\n"
+         #print "\n\n",Tasks,valloc,"\n\n"
 
          
 
@@ -1160,7 +1235,9 @@ while(count<4 and len(Tasks)>0):
 
          while(h<m):
                  alreadydone=0
-#                 print "\n\nVtimer",Tasks[h],Vtimer[valloc[counter]-1],"\n\n" 
+                 
+                 #print "\n\n",valloc,counter,Vtimer,valloc[counter],"\n\n"
+                 #print "\n\nVtimer",Tasks[h],Vtimer[valloc[counter]-1],"\n\n" 
 
                  if (TDL[h] > TQ2 and TDL[h] > Vtimer[valloc[counter]-1] and TBurst[h]>0):
 
@@ -1196,7 +1273,15 @@ while(count<4 and len(Tasks)>0):
 
                           if (TBurst[h]==0 or TDL[h]<=Vtimer[valloc[counter]-1]):
 
-                                TCT[Tasks[h]]=Vtimer[valloc[counter]-1]
+                                if Tasks[h] in TCT.keys():
+                                
+                                        TCT[Tasks[h]]=TCT[Tasks[h]]+Vtimer[valloc[counter]-1]
+                                
+                                else:
+                                
+                                        TCT[Tasks[h]]=Vtimer[valloc[counter]-1]
+                                        
+                                #print "\n\ni m here here here",Tasks[h],TCT[Tasks[h]]
                                 
                                 if Tasks[h] in TExec.keys():
 
@@ -1244,6 +1329,7 @@ while(count<4 and len(Tasks)>0):
 
                           if (len(Tasks)>0):
                                 
+                                #print "\n\n......",Tasks[h]
                                 if Tasks[h] in TExec.keys():
 
                                         TExec[Tasks[h]]=TExec[Tasks[h]]+Executiontime
@@ -1252,8 +1338,11 @@ while(count<4 and len(Tasks)>0):
 
                                         TExec[Tasks[h]]=Executiontime
 
+                                TCT[Tasks[h]]=TExec[Tasks[h]]
                                 #print "Execution times",TExec,"\n\n"
 
+                                #print "\n\ni m here here",Tasks[h],TCT[Tasks[h]]
+                                
                                 if alreadydone==0:
                                         index=Tasks.index(Tasks[h])
 
@@ -1325,7 +1414,15 @@ while(count<4 and len(Tasks)>0):
 
                           if (TBurst[h]==0 or TDL[h]<=Vtimer[valloc[counter]-1]):
                                 
-                                TCT[Tasks[h]]=Vtimer[valloc[counter]-1]
+                                if Tasks[h] in TCT.keys():
+                                
+                                        TCT[Tasks[h]]=TCT[Tasks[h]]+Vtimer[valloc[counter]-1]
+                                
+                                else:
+                                
+                                        TCT[Tasks[h]]=Vtimer[valloc[counter]-1]
+                                
+                               # print "\n\n i m here",Tasks[h],TCT[Tasks[h]]
 
                                 if Tasks[h] in TExec.keys():
 
@@ -1387,10 +1484,32 @@ while(count<4 and len(Tasks)>0):
                                           
 #print '\n\n',Vtimer,Tasks,TCT,TBurst,TDL,Vflags,TExec,'\n\n'     
                      
-#print Vtimer,LQ                     
+#print "\n\n",TCT                    
 #****************************END OF MQ EXECUTION**************************
 
+if (len(Halloc.keys())>0):
+
+        print "\nThe Extra Vms created in this process are...\n"
+
+        H=[k+1 for k,v in Halloc.items()]
+
+        NewVms=[v[0] for k,v in Halloc.items()]
+
+        print "Vms...",NewVms,"-->to Hosts-->",H,"\nWith Specifications...\nRam  :   ",Vram[NewVms[0]-1],"\nSize :   ",Vsize[NewVms[0]-1],"\nMips :   ",Vmips[NewVms[0]-1],"\n\n" 
+
+        print "Destroying the extra vms created...\nDestroying VM%d\n\n" %NewVms[0]                 
+
+        Hram[H[0]-1]=Hram[H[0]-1]+Vram[NewVms[0]-1]
+
+        Hsize[H[0]-1]=Hsize[H[0]-1]+Vsize[NewVms[0]-1]  
+
+        Hmips[H[0]-1]=Hmips[H[0]-1]+Vmips[NewVms[0]-1]        
+
+        print "\n\nWe have following resources after killing of virtual machines...:\nHosts     : ",Hosts,"\nRAMs      : ",Hram,"\nSizes     : ",Hsize,"\nMIPS      : ",Hmips,"\n"
+
+
 #****************************START OF LQ EXECUTION IN FCFS FASHION                     
+
 print "Execution of Tasks in LQ......\n\n"
                 
 #Tasks specifications
@@ -1432,7 +1551,9 @@ Vflags=[0 for i in range(m)]
 
 count=0
 
-while(count<2 and len(Tasks)>0):     
+Halloc={}
+
+while(count<4 and len(Tasks)>0):     
 
          i=0 
 
@@ -1470,14 +1591,20 @@ while(count<2 and len(Tasks)>0):
                         ram=(Tram[i])
 
                         size=(Tsize[i])
+                        
+                        done=0
 
+                        extra=[]
+                        
                         for k in range(l): 
+                        
+                                if done==0:
 
                                     if mips <= Hmips[k] and ram <= Hram[k] and size <= Hsize[k]:
 
                                           V=[mips,ram,size]
 
-                                          Vms.append(i+1)
+                                          Vms.append(len(Vms)+1)
 
                                           vmdict[(Vms[len(Vms)-1])]=V        
 
@@ -1487,19 +1614,27 @@ while(count<2 and len(Tasks)>0):
 
                                           Vmips.append(mips)
 
-                                          Hram[i]=Hram[i]-Vram[i]
+                                          Hram[k]=Hram[k]-Vram[len(Vms)-1]
 
-                                          Hsize[i]=Hsize[i]-Vsize[i]
+                                          Hsize[k]=Hsize[k]-Vsize[len(Vms)-1]
 
-                                          Hmips[i]=Hmips[i]-Vmips[i]
+                                          Hmips[k]=Hmips[k]-Vmips[len(Vms)-1]
 
+                                          extra.append(Vms[len(Vms)-1])
+                                          
+                                          Halloc[k]=extra
+                                          
                                           Talloc[Vms[len(Vms)-1]]=Tasks[i]
 
                                           Vflags.append(1)
 
                                           Vtimer.append(0)
+                                          
+                                          done=1
 
-                 
+                                else:
+                                
+                                    break;
 
                         if Tasks[i] not in Talloc.values():
 
@@ -1795,6 +1930,7 @@ for k,v in TCT.items():
         TTAT[k]=TCT[k]-int(inputdata[k][4])
 
         TWT[k]=TTAT[k]-TExec[k]
+        
 
 for k in TExec.keys():
 
@@ -1833,9 +1969,51 @@ TWTime=[int(TWT[Tasks[i]]) for i in range(len(Tasks))] #contains waiting times o
 TExecTime=[int(TExec[Tasks[i]]) for i in range(len(Tasks))] #contains execution times of Tasks
                 
 print "We have following output after executing Tasks in HQ,MQ and LQ:\nTasks                       :     ",Tasks,"\nRAMs                        :     ",Tram,"\nSizes                       :     ",Tsize,"\nNo of Instructions          :     ",Tno_of_Instr,"\nArrivalTime                 :     ",TArrival,"\nBurstTime                   :     ",TBurst,"\nDeadLine                    :     ",TDL,"\nTasks completionTime        :     ",TCTime,"\nTasks TurnAroundtime        :     ",TTATime,"\nTasks WaitingTime           :     ",TWTime,"\nNo.of Instructions Executed :     ",TExecTime,"\n\n"                      
-                     
-#************COMPLETION OF ALGORITHM**********                     
+#******************************************
+
+if (len(Halloc.keys())>0):
+
+        print "\nThe Extra Vms created in this process are...\n"
+
+        H=[k+1 for k,v in Halloc.items()]
+
+        NewVms=[v[0] for k,v in Halloc.items()]
+
+        print "Vms...",NewVms,"-->to Hosts-->",H,"\nWith Specifications...\nRam  :   ",Vram[NewVms[0]-1],"\nSize :   ",Vsize[NewVms[0]-1],"\nMips :   ",Vmips[NewVms[0]-1],"\n\n" 
+
+        print "Destroying the extra vms created...\nDestroying VM%d\n\n" %NewVms[0]                 
+
+        Hram[H[0]-1]=Hram[H[0]-1]+Vram[NewVms[0]-1]
+
+        Hsize[H[0]-1]=Hsize[H[0]-1]+Vsize[NewVms[0]-1]  
+
+        Hmips[H[0]-1]=Hmips[H[0]-1]+Vmips[NewVms[0]-1]        
+
+        print "\n\nWe have following resources after killing of virtual machines...:\nHosts     : ",Hosts,"\nRAMs      : ",Hram,"\nSizes     : ",Hsize,"\nMIPS      : ",Hmips,"\n"
+
+              
+#************COMPLETION OF ALGORITHM********** 
+
+
+for i in range(len(Hosts)):
+        
+        print "Virtual machine %d has been destroyed..." % (i+1)
+        
+        Hram[i]=Hram[i]+Vram[i]
+  
+        Hsize[i]=Hsize[i]+Vsize[i]
+  
+        Hmips[i]=Hmips[i]+Vmips[i]
+        
+print "\n\nWe have following resources after killing of virtual machines...:\nHosts     : ",Hosts,"\nRAMs      : ",Hram,"\nSizes     : ",Hsize,"\nMIPS      : ",Hmips,"\n"
+
+                    
 print "END OF THE ALGORITHM.....\n\n"
+
+print "Average Turnaround Time                 :          %f" %(sum(TTATime)/len(TTATime))
+print "Average Waiting Time                    :          %f" %(sum(TWTime)/len(TWTime))
+print "Total Number Of Instructions Executed   :          %d" % (sum(TExecTime))
+print "Given Total Number Of Instructions      :          %d\n\n" % (sum(Tno_of_Instr))
 
 print "To plot results type python outputplot.py....\n\n"
 
